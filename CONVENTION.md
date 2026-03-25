@@ -2,6 +2,23 @@
 
 This document outlines the conventions and best practices for backend development in the English Learning Web Application. These conventions ensure consistency, maintainability, and adherence to the architecture.
 
+## Business Logic Policy
+
+All backend implementation decisions must preserve product behavior and business rules before technical optimization.
+
+Required business invariants:
+
+- Role invariants: only `student`, `teacher`, `admin` are valid role values.
+- Ownership invariants: a teacher can modify only teacher-owned classes and content.
+- Enrollment invariants: student enrollment changes must be validated against account status and plan constraints.
+- Revenue invariants: payment webhooks must be idempotent and never create duplicate invoices/subscriptions.
+- Audit invariants: admin and moderation actions must be traceable in logs.
+- Recovery invariants: archive flows must use soft delete to support restore and investigations.
+
+Decision rule:
+
+- If a technical shortcut conflicts with domain correctness, domain correctness wins.
+
 ---
 
 ## General Guidelines
@@ -237,6 +254,17 @@ func NewRouter() http.Handler {
 ---
 
 ## Sample Code for Each Layer
+
+## Business Readiness Checklist
+
+Before merging backend work, confirm:
+
+- Domain rules are enforced in service layer (not only handler input checks).
+- Authorization and ownership checks are present for mutating operations.
+- Route behavior reflects product intent and role capabilities.
+- Error responses are actionable for frontend and support teams.
+- Data writes are safe for retries and concurrent requests.
+- Tests cover at least one critical business path and one failure path.
 
 ### Handler Layer
 - **Responsibilities**: Handles HTTP requests and responses.

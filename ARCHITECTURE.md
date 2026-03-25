@@ -2,6 +2,31 @@
 
 ## Overview
 This document outlines the architecture for an English Learning Web Application. The application is designed using a microservices architecture to ensure scalability, maintainability, and flexibility. The tech stack includes Svelte 4 for the frontend, Go for the backend, PostgreSQL as the database, and Keycloak for authentication and authorization. The backend follows a layered architecture with business, handler, and service layers.
+
+## Business Logic Alignment
+
+This architecture is business-first and must support the following outcomes:
+
+- Increase learner completion rate through progress, streak, and badge logic.
+- Improve teacher retention through class ownership, analytics, and invitation workflows.
+- Protect revenue flows through subscription, invoice, and payment reconciliation rules.
+- Keep governance auditable through admin controls, moderation, and feature flags.
+
+Core domain rules:
+
+- Role model is strict: `student`, `teacher`, `admin`.
+- Teacher-only actions: create/publish course content, manage classes, invite students.
+- Student-only actions: enroll, consume lessons, generate progress and attempts.
+- Admin-only actions: role/status updates, moderation, feature flags, audit access.
+- Archive semantics must be soft delete for business recoverability and compliance.
+
+Business KPIs this architecture should enable:
+
+- Activation rate (registration to first lesson).
+- Course completion rate by cohort and class.
+- Teacher class performance and learner progression.
+- Conversion and retention for paid plans.
+- Notification delivery success and re-engagement performance.
     
 ---
 
@@ -307,6 +332,17 @@ This diagram illustrates the interaction between the frontend, backend services,
 - Add support for WebSockets for real-time features.
 - Implement GraphQL for more flexible data querying.
 - Introduce AI-based personalized learning recommendations.
+
+## Business Acceptance Checklist
+
+Use this checklist before releasing a new architecture change:
+
+- Role-based behavior is correctly enforced in all affected services.
+- Learner, teacher, and admin journeys remain consistent end-to-end.
+- Payment and subscription flows are idempotent and auditable.
+- Progress and analytics data remain accurate after changes.
+- Operational controls (audit logs, moderation, feature flags) are unaffected.
+- Error handling preserves business continuity (no silent data loss).
 
 ---
 

@@ -1,5 +1,22 @@
 # Environment Guidelines
 
+## Business Operation Profile
+
+Environment configuration must protect business continuity and consistent user journeys.
+
+Business-focused requirements:
+
+- Service URLs and ports must remain stable per environment to avoid broken customer flows.
+- API prefix `/api/v1` must remain consistent across services to reduce integration drift.
+- Authentication configuration must fail closed (deny unauthorized access by default).
+- Runtime settings must support incident response (observability, traceability, rollback).
+
+Release safety rules:
+
+- No production deployment without validated Keycloak and JWT configuration.
+- No route prefix change without coordinated frontend and API client update.
+- No service port/base URL drift without updating environment manifests and runbooks.
+
 ## Routing Configuration
 
 ### Guidelines
@@ -188,3 +205,11 @@ JWT_SECRET=devsupersecretkey
 JWT_EXPIRATION=3600
 JWT_ISSUER=devapp
 ```
+
+## Business Release Checklist
+
+- All critical services are reachable with expected base URLs.
+- Login and token validation flow works in target environment.
+- Service-to-service and frontend-to-service routing resolve correctly.
+- Monitoring captures failures on auth, payment, and progress endpoints.
+- Environment changes are documented for support and operations teams.
